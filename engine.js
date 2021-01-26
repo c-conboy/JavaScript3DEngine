@@ -24,7 +24,7 @@ var Cube = function(center, size){
         new Vertex(center.x - d, center.y + d, center.z + d)
     ]
 
-    //could make this more dynamic with loops
+    //could make this more dynamic with loops 
 
     this.faces = [
         [this.vertices[0], this.vertices[1], this.vertices[2], this.vertices[3]],
@@ -33,6 +33,31 @@ var Cube = function(center, size){
         [this.vertices[7], this.vertices[6], this.vertices[1], this.vertices[0]],
         [this.vertices[7], this.vertices[0], this.vertices[3], this.vertices[4]],
         [this.vertices[1], this.vertices[6], this.vertices[5], this.vertices[2]]
+    ]
+
+}
+
+
+var Pyramid = function(center, r, h){
+
+    var dz = h/2
+
+    this.vertices = [
+        new Vertex(center.x, center.y, center.z + dz),
+        new Vertex(center.x + r, center.y + r, center.z - dz),
+        new Vertex(center.x - r, center.y + r, center.z - dz),
+        new Vertex(center.x + r, center.y - r, center.z - dz),
+        new Vertex(center.x - r, center.y - r, center.z - dz),
+    ]
+
+    //could make this more dynamic with loops
+
+    this.faces = [
+        [this.vertices[0], this.vertices[1], this.vertices[2]],
+        [this.vertices[0], this.vertices[1], this.vertices[3]],
+        [this.vertices[0], this.vertices[4], this.vertices[2]],
+        [this.vertices[0], this.vertices[4], this.vertices[3]],
+        [this.vertices[1], this.vertices[2], this.vertices[3], this.vertices[4]]
     ]
 
 }
@@ -96,8 +121,10 @@ function rotate(M, center, theta, pi){
 
 
 function autoRotate(){
-    for (var i = 0; i < 8; i++){
-        rotate(cube1.vertices[i], cube_center, -Math.PI/720, Math.PI/720);
+    for (var z = 0; z < objects.length; ++z){
+        for (var i = 0; i < objects[z].vertices.length; i++){
+            rotate(objects[z].vertices[i], cube_center, -Math.PI/720, Math.PI/720);
+        }
     }
     render(objects, ctx, dx, dy);
 
@@ -116,13 +143,16 @@ var cube_center = new Vertex(0,11*dy/10,0);
 
 
 var cube1 = new Cube(cube_center, dy);
+var cube2 = new Cube(cube_center, dy/2);
+var pyramid1 = new Pyramid(cube_center, dy/2, dy);
+var pyramid2 = new Pyramid(cube_center, dy/4, dy/2);
 
-var objects = [cube1];
+var objects = [pyramid1, pyramid2, cube1, cube2];
 
 
 render(objects, ctx, dx, dy);
 
-setTimeout(autoRotate, 20);
+setTimeout(autoRotate(objects), 20);
 
 
 
