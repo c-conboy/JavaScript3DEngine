@@ -44,7 +44,7 @@ var Cube = function(center, size){
 
 function render(objects, ctx, dx, dy){
 
-    
+    ctx.clearRect(0, 0, 2*dx, 2*dy);
 
     for(var i =0, numbObjects = objects.length; i < numbObjects; ++i){
         for(var j=0, numbFaces = objects[j].faces.length; j < numbFaces; ++j){
@@ -76,6 +76,35 @@ function project(M){
 }
 
 
+function rotate(M, center, theta, pi){
+    //Rotation matrix 
+    var ct = Math.cos(theta);
+    var st = Math.sin(theta);
+    var cp = Math.cos(pi);
+    var sp = Math.sin(pi);
+
+
+
+    var x = M.x - center.x;
+    var y = M.y - center.y;
+    var z = M.z - center.z;
+
+    M.x = ct * x - st * cp * y + st * sp * z + center.x;
+	M.y = st * x + ct * cp * y - ct * sp * z + center.y;
+	M.z = sp * y + cp * z + center.z;
+}
+
+
+function autoRotate(){
+    for (var i = 0; i < 8; i++){
+        rotate(cube1.vertices[i], cube_center, -Math.PI/720, Math.PI/720);
+    }
+    render(objects, ctx, dx, dy);
+
+    setTimeout(autoRotate, 20);
+}
+
+
 var canvas = document.getElementById('myChart'); 
 var ctx = canvas.getContext('2d');
 ctx.strokeStyle = 'rgba(0, 0, 0, 0.3)';
@@ -92,6 +121,10 @@ var objects = [cube1];
 
 
 render(objects, ctx, dx, dy);
+
+setTimeout(autoRotate, 20);
+
+
 
 
 
