@@ -1,4 +1,10 @@
-
+//4D Vertex
+var Vertex4D = function(x,y,z,w){
+    this.x = parseFloat(x);
+    this.y = parseFloat(y);
+    this.z = parseFloat(z);
+    this.w = parseFloat(w);
+}
 
 //3D vertex
 var Vertex = function(x,y,z){
@@ -76,9 +82,76 @@ var Pyramid = function(center, r, h){
 
 
 
+var Tessaract = function (center, d){
+    
+    this.vertices = [
+        new Vertex4D(center.x-d, center.y-d, center.z-d ,center.w-d),//[0] 0000
+        new Vertex4D(center.x-d, center.y-d, center.z-d ,center.w+d),//[1] 0001
+        new Vertex4D(center.x-d, center.y-d, center.z+d ,center.w-d),//[2] 0010
+        new Vertex4D(center.x-d, center.y-d, center.z+d ,center.w+d),//[3] 0011
+        new Vertex4D(center.x-d, center.y+d, center.z-d ,center.w-d),//[4] 0100
+        new Vertex4D(center.x-d, center.y+d, center.z-d ,center.w+d),//[5] 0101
+        new Vertex4D(center.x-d, center.y+d, center.z+d ,center.w-d),//[6] 0110
+        new Vertex4D(center.x-d, center.y+d, center.z+d ,center.w+d),//[7] 0111
+        new Vertex4D(center.x+d, center.y-d, center.z-d ,center.w-d),//[8] 1000
+        new Vertex4D(center.x+d, center.y-d, center.z-d ,center.w+d),//[9] 1001
+        new Vertex4D(center.x+d, center.y-d, center.z+d ,center.w-d),//[10] 1010
+        new Vertex4D(center.x+d, center.y-d, center.z+d ,center.w+d),//[11] 1011
+        new Vertex4D(center.x+d, center.y+d, center.z-d ,center.w-d),//[12] 1100
+        new Vertex4D(center.x+d, center.y+d, center.z-d ,center.w+d),//[13] 1101
+        new Vertex4D(center.x+d, center.y+d, center.z+d ,center.w-d),//[14] 1110
+        new Vertex4D(center.x+d, center.y+d, center.z+d ,center.w+d),//[15] 1111
+    ]
+
+
+    this.edges = [
+        [this.vertices[0], this.vertices[1]],
+        [this.vertices[0], this.vertices[2]],
+        [this.vertices[0], this.vertices[4]],
+        [this.vertices[0], this.vertices[8]],
+        [this.vertices[1], this.vertices[3]],
+        [this.vertices[1], this.vertices[5]],
+        [this.vertices[1], this.vertices[9]],
+        [this.vertices[2], this.vertices[3]],
+        [this.vertices[2], this.vertices[6]],
+        [this.vertices[2], this.vertices[10]],
+        [this.vertices[3], this.vertices[7]],
+        [this.vertices[3], this.vertices[11]],
+        [this.vertices[4], this.vertices[5]],
+        [this.vertices[4], this.vertices[6]],
+        [this.vertices[4], this.vertices[12]],
+        [this.vertices[5], this.vertices[7]],
+        [this.vertices[5], this.vertices[13]],
+        [this.vertices[6], this.vertices[7]],
+        [this.vertices[6], this.vertices[14]],
+        [this.vertices[7], this.vertices[15]],
+        [this.vertices[8], this.vertices[9]],
+        [this.vertices[8], this.vertices[10]],
+        [this.vertices[8], this.vertices[12]],
+        [this.vertices[9], this.vertices[11]],
+        [this.vertices[9], this.vertices[13]],
+        [this.vertices[10], this.vertices[11]],
+        [this.vertices[10], this.vertices[14]],
+        [this.vertices[11], this.vertices[15]],
+        [this.vertices[12], this.vertices[13]],
+        [this.vertices[12], this.vertices[14]],
+        [this.vertices[13], this.vertices[15]],
+        [this.vertices[14], this.vertices[15]],
+    ]
+
+
+}
+
+
+
+function project3d(M){  
+    var tempw = 1 / (2 - M.w);
+    return new Vertex (M.x*tempw, M.y*tempw, M.z*tempw);
+}
+
 
 //Render Function
-function render(objects, ctx, dx, dy){
+/*function render(objects, ctx, dx, dy){
 
     //Clears last render
     ctx.clearRect(0, 0, 2*dx, 2*dy);
@@ -93,7 +166,7 @@ function render(objects, ctx, dx, dy){
             ctx.beginPath();
             ctx.moveTo(P.x + dx, -P.y + dy);//moves pen to projection of first vertex
 
-            for (var k=0, numbVertices = face.length; k < numbVertices; ++k){//draws line to each 2d projection of each vertex to draw shape
+            for (var k=0, numbVertices = face.length; k < numbVertices; ++k){//draws line to each 2d projection of each vertex to draw face
                 P = project(face[k]);
                 ctx.lineTo(P.x + dx, -P.y + dy);
             }
@@ -106,11 +179,38 @@ function render(objects, ctx, dx, dy){
 
         }//Loops through each face in object
     }//Loops through all objects in objects array
+}*/
+
+function render(objects, ctx, dx, dy){
+
+    //Clears last render
+    ctx.clearRect(0, 0, 2*dx, 2*dy);
+    for(var i =0, numbObjects = objects.length; i < numbObjects; ++i){
+        
+        for(var j=0, numbVertices = objects[i].edges.length; j < numbVertices; ++j){
+            //draw each edge
+
+            var edge = objects[i].edges[j];//var to store edge
+            var P1 = project(project3d(edge[0]))//var to project edge vertex 1 to 2d
+            var P2 = project(project3d(edge[1]))//var to project edge vertex 2 to 2d
+            
+            ctx.beginPath();
+            ctx.moveTo(P1.x + dx, -P1.y + dy);///moves pen to first vertex
+            ctx.lineTo(P2.x + dx, -P2.y + dy);///moves pen to second vertex
+
+            ctx.closePath();
+            ctx.stroke();
+
+        }//Loops through each edge in object
+    }//Loops through all objects in objects array
 }
 
 //2D projection of 3D point
 function project(M){
-    return new Vertex2D(M.x, M.z);
+    var d = 200;
+    var r = d / M.y;
+
+    return new Vertex2D(r * M.x, r * M.z);
 }
 
 //Rotates a vertex using a rotation matrix
@@ -126,11 +226,24 @@ function rotate(M, center, theta, pi){
     var x = M.x - center.x;
     var y = M.y - center.y;
     var z = M.z - center.z;
+    var w = M.w - center.w;
 
+    /*
+    M.x = x*ct - y*st + center.x;
+    M.y = y*ct + x*st + center.y;
+    M.z = z*ct - w*st + center.z;
+    M.w = w*ct + z*st + center.w; 
+    */
+   M.x = x*ct - z*st + center.x;
+   M.z = z*ct + x*st + center.z;
+   M.y = y*ct - w*st + center.y;
+   M.w = w*ct + y*st + center.w;
+    /*
     //rotate
     M.x = ct * x - st * cp * y + st * sp * z + center.x;
 	M.y = st * x + ct * cp * y - ct * sp * z + center.y;
-	M.z = sp * y + cp * z + center.z;
+    M.z = sp * y + cp * z + center.z;
+    */
 }
 
 //Autorates if theres no input
@@ -138,7 +251,7 @@ function autoRotate(){
     if(mousedown == false){
         for (var z = 0; z < objects.length; ++z){
             for (var i = 0; i < objects[z].vertices.length; i++){
-                rotate(objects[z].vertices[i], cube_center, -Math.PI/720, Math.PI/720);
+                rotate(objects[z].vertices[i], tesseract_center, -Math.PI/720, Math.PI/720);
             }
         }
         render(objects, ctx, dx, dy);
@@ -162,7 +275,7 @@ function move(evt){
 
         for (var z = 0; z < objects.length; ++z){//runs through each object
             for (var i = 0; i < objects[z].vertices.length; i++){//Thoguh each vertex
-                rotate(objects[z].vertices[i], cube_center, theta, pi);//Rotates each vertex
+                rotate(objects[z].vertices[i], tesseract_center, theta, pi);//Rotates each vertex
             }
         }
         render(objects, ctx, dx, dy);//rerenders
@@ -190,6 +303,7 @@ var dy = canvas.height / 2;
 
 
 var cube_center = new Vertex(0,11*dy/10,0);
+var tesseract_center = new Vertex4D(0,11*dy/10,0,0);
 
 
 var cube1 = new Cube(cube_center, dy);
@@ -197,8 +311,9 @@ var cube2 = new Cube(cube_center, dy/2);
 var pyramid1 = new Pyramid(cube_center, dy/2, dy);
 var pyramid2 = new Pyramid(cube_center, dy/4, dy/2);
 
-var objects = [pyramid1, pyramid2, cube1, cube2];
+var tesseract = new Tessaract(tesseract_center, dy/4);
 
+var objects = [tesseract];
 
 //event setup
 canvas.addEventListener('mousedown', initiateMove);
@@ -212,6 +327,8 @@ var mousedown = false;
 
 //first render
 render(objects, ctx, dx, dy);
+
+setTimeout(autoRotate(objects), 1000);
 
 
 
