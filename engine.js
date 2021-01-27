@@ -139,14 +139,49 @@ var Tessaract = function (center, d){
         [this.vertices[14], this.vertices[15]],
     ]
 
+    this.colours = [
+        "#"+((1<<24)*Math.random()|0).toString(16),
+        "#"+((1<<24)*Math.random()|0).toString(16),
+        "#"+((1<<24)*Math.random()|0).toString(16),
+        "#"+((1<<24)*Math.random()|0).toString(16),
+        "#"+((1<<24)*Math.random()|0).toString(16),
+        "#"+((1<<24)*Math.random()|0).toString(16),
+        "#"+((1<<24)*Math.random()|0).toString(16),
+        "#"+((1<<24)*Math.random()|0).toString(16),
+        "#"+((1<<24)*Math.random()|0).toString(16),
+        "#"+((1<<24)*Math.random()|0).toString(16),
+        "#"+((1<<24)*Math.random()|0).toString(16),
+        "#"+((1<<24)*Math.random()|0).toString(16),
+        "#"+((1<<24)*Math.random()|0).toString(16),
+        "#"+((1<<24)*Math.random()|0).toString(16),
+        "#"+((1<<24)*Math.random()|0).toString(16),
+        "#"+((1<<24)*Math.random()|0).toString(16),
+        "#"+((1<<24)*Math.random()|0).toString(16),
+        "#"+((1<<24)*Math.random()|0).toString(16),
+        "#"+((1<<24)*Math.random()|0).toString(16),
+        "#"+((1<<24)*Math.random()|0).toString(16),
+        "#"+((1<<24)*Math.random()|0).toString(16),
+        "#"+((1<<24)*Math.random()|0).toString(16),
+        "#"+((1<<24)*Math.random()|0).toString(16),
+        "#"+((1<<24)*Math.random()|0).toString(16),
+        "#"+((1<<24)*Math.random()|0).toString(16),
+        "#"+((1<<24)*Math.random()|0).toString(16),
+        "#"+((1<<24)*Math.random()|0).toString(16),
+        "#"+((1<<24)*Math.random()|0).toString(16),
+        "#"+((1<<24)*Math.random()|0).toString(16),
+        "#"+((1<<24)*Math.random()|0).toString(16),
+        "#"+((1<<24)*Math.random()|0).toString(16),
+        "#"+((1<<24)*Math.random()|0).toString(16)
+    ]
+
 
 }
 
 
 
 function project3d(M){  
-    var tempw = 1 / (2 - M.w);
-    return new Vertex (M.x*tempw, M.y*tempw, M.z*tempw);
+    var tempw = 1 / (20 - M.w);
+    return new Vertex (M.x*tempw, M.y*tempw, M.w*tempw);
 }
 
 
@@ -199,6 +234,8 @@ function render(objects, ctx, dx, dy){
             ctx.lineTo(P2.x + dx, -P2.y + dy);///moves pen to second vertex
 
             ctx.closePath();
+
+            ctx.strokeStyle = objects[i].colours[j];
             ctx.stroke();
 
         }//Loops through each edge in object
@@ -207,10 +244,12 @@ function render(objects, ctx, dx, dy){
 
 //2D projection of 3D point
 function project(M){
-    var d = 200;
+
+    var d = 500;
     var r = d / M.y;
 
     return new Vertex2D(r * M.x, r * M.z);
+
 }
 
 //Rotates a vertex using a rotation matrix
@@ -228,22 +267,10 @@ function rotate(M, center, theta, pi){
     var z = M.z - center.z;
     var w = M.w - center.w;
 
-    /*
-    M.x = x*ct - y*st + center.x;
-    M.y = y*ct + x*st + center.y;
-    M.z = z*ct - w*st + center.z;
-    M.w = w*ct + z*st + center.w; 
-    */
-   M.x = x*ct - z*st + center.x;
-   M.z = z*ct + x*st + center.z;
-   M.y = y*ct - w*st + center.y;
-   M.w = w*ct + y*st + center.w;
-    /*
-    //rotate
+    
     M.x = ct * x - st * cp * y + st * sp * z + center.x;
-	M.y = st * x + ct * cp * y - ct * sp * z + center.y;
-    M.z = sp * y + cp * z + center.z;
-    */
+    M.y = st * x + ct * cp * y - ct * sp * z + center.y;
+    M.z = sp * y + cp * z + center.z; 
 }
 
 //Autorates if theres no input
@@ -294,8 +321,9 @@ function stopMove(){//evt mosue up
 //canvas setup
 var canvas = document.getElementById('myChart'); 
 var ctx = canvas.getContext('2d');
-ctx.strokeStyle = 'rgba(0, 0, 0, 0.3)';
+ctx.strokeStyle = 'rgba(0, 0, 0, 1)';
 ctx.fillStyle = 'rgba(0, 150, 255, 0.3)';
+ctx.lineWidth = 3;
 
 //reference center
 var dx = canvas.width / 2;
