@@ -1,18 +1,26 @@
+
+
+//3D vertex
 var Vertex = function(x,y,z){
     this.x = parseFloat(x);
     this.y = parseFloat(y);
     this.z = parseFloat(z);
 }
 
+//2D vertex
 var Vertex2D = function(x,y){
     this.x = parseFloat(x);
     this.y = parseFloat(y);
 }
 
 
+
+//Cube Contructor
 var Cube = function(center, size){
     var d = size/2;
 
+
+    //Create vertex
     this.vertices = [
         new Vertex(center.x - d, center.y - d, center.z + d),
         new Vertex(center.x - d, center.y - d, center.z - d),
@@ -26,6 +34,7 @@ var Cube = function(center, size){
 
     //could make this more dynamic with loops 
 
+    //Create Faces
     this.faces = [
         [this.vertices[0], this.vertices[1], this.vertices[2], this.vertices[3]],
         [this.vertices[3], this.vertices[2], this.vertices[5], this.vertices[4]],
@@ -37,11 +46,12 @@ var Cube = function(center, size){
 
 }
 
-
+//Pyramid Contructor
 var Pyramid = function(center, r, h){
 
     var dz = h/2
 
+    //Create vertex
     this.vertices = [
         new Vertex(center.x, center.y, center.z + dz),
         new Vertex(center.x + r, center.y + r, center.z - dz),
@@ -52,6 +62,7 @@ var Pyramid = function(center, r, h){
 
     //could make this more dynamic with loops
 
+    //Create Faces
     this.faces = [
         [this.vertices[0], this.vertices[1], this.vertices[2]],
         [this.vertices[0], this.vertices[1], this.vertices[3]],
@@ -66,22 +77,23 @@ var Pyramid = function(center, r, h){
 
 
 
-
+//Render Function
 function render(objects, ctx, dx, dy){
 
+    //Clears last render
     ctx.clearRect(0, 0, 2*dx, 2*dy);
 
     for(var i =0, numbObjects = objects.length; i < numbObjects; ++i){
         for(var j=0, numbFaces = objects[j].faces.length; j < numbFaces; ++j){
            
-            var face = objects[i].faces[j];
+            var face = objects[i].faces[j];//gets current face 
 
-            var P = project(face[0]);  
+            var P = project(face[0]); //P is projection of first vertex
             
             ctx.beginPath();
-            ctx.moveTo(P.x + dx, -P.y + dy);
+            ctx.moveTo(P.x + dx, -P.y + dy);//moves pen to projection of first vertex
 
-            for (var k=0, numbVertices = face.length; k < numbVertices; ++k){
+            for (var k=0, numbVertices = face.length; k < numbVertices; ++k){//draws line to each 2d projection of each vertex to draw shape
                 P = project(face[k]);
                 ctx.lineTo(P.x + dx, -P.y + dy);
             }
@@ -92,15 +104,16 @@ function render(objects, ctx, dx, dy){
             ctx.fill();
 
 
-        }
-    }
+        }//Loops through each face in object
+    }//Loops through all objects in objects array
 }
 
+//2D projection of 3D point
 function project(M){
     return new Vertex2D(M.x, M.z);
 }
 
-
+//Rotates a vertex using a rotation matrix
 function rotate(M, center, theta, pi){
     //Rotation matrix 
     var ct = Math.cos(theta);
@@ -109,35 +122,72 @@ function rotate(M, center, theta, pi){
     var sp = Math.sin(pi);
 
 
-
+    //vector from center to vertex
     var x = M.x - center.x;
     var y = M.y - center.y;
     var z = M.z - center.z;
 
+    //rotate
     M.x = ct * x - st * cp * y + st * sp * z + center.x;
 	M.y = st * x + ct * cp * y - ct * sp * z + center.y;
 	M.z = sp * y + cp * z + center.z;
 }
 
-
+//Autorates if theres no input
 function autoRotate(){
-    for (var z = 0; z < objects.length; ++z){
-        for (var i = 0; i < objects[z].vertices.length; i++){
-            rotate(objects[z].vertices[i], cube_center, -Math.PI/720, Math.PI/720);
+    if(mousedown == false){
+        for (var z = 0; z < objects.length; ++z){
+            for (var i = 0; i < objects[z].vertices.length; i++){
+                rotate(objects[z].vertices[i], cube_center, -Math.PI/720, Math.PI/720);
+            }
         }
-    }
-    render(objects, ctx, dx, dy);
+        render(objects, ctx, dx, dy);
 
-    setTimeout(autoRotate, 20);
+        setTimeout(autoRotate, 5);
+    }
+}
+
+//Event when mousedown, sets reference mouse position
+function initiateMove(evt){
+    mousedown = true;
+    cx = evt.clientX;
+    cy = evt.clientY;
+}
+
+//Moves Shapes, event on mouse move
+function move(evt){
+    if(mousedown == true){//Check that mouse is down
+        var theta = 0.6*(cx - evt.clientX)*Math.PI/360;//difference between reference position and current postion, converted into angle, x axis
+        var pi = 0.6*(cy - evt.clientY)*Math.PI/180;//difference between reference position and current postion, converted into angle, y axis
+
+        for (var z = 0; z < objects.length; ++z){//runs through each object
+            for (var i = 0; i < objects[z].vertices.length; i++){//Thoguh each vertex
+                rotate(objects[z].vertices[i], cube_center, theta, pi);//Rotates each vertex
+            }
+        }
+        render(objects, ctx, dx, dy);//rerenders
+
+        cx = evt.clientX;//update reference mosue position
+        cy = evt.clientY;
+    }
+}
+
+function stopMove(){//evt mosue up
+    mousedown = false; 
+    setTimeout(autoRotate(objects), 1000);
 }
 
 
+//canvas setup
 var canvas = document.getElementById('myChart'); 
 var ctx = canvas.getContext('2d');
 ctx.strokeStyle = 'rgba(0, 0, 0, 0.3)';
 ctx.fillStyle = 'rgba(0, 150, 255, 0.3)';
+
+//reference center
 var dx = canvas.width / 2;
 var dy = canvas.height / 2;
+
 
 var cube_center = new Vertex(0,11*dy/10,0);
 
@@ -150,9 +200,24 @@ var pyramid2 = new Pyramid(cube_center, dy/4, dy/2);
 var objects = [pyramid1, pyramid2, cube1, cube2];
 
 
+//event setup
+canvas.addEventListener('mousedown', initiateMove);
+document.addEventListener('mousemove', move);
+document.addEventListener('mouseup', stopMove);
+
+var cx = 0;
+var cy = 0;
+
+var mousedown = false;
+
+//first render
 render(objects, ctx, dx, dy);
 
-setTimeout(autoRotate(objects), 20);
+
+
+
+
+ 
 
 
 
