@@ -4,4 +4,4 @@ Developing a simple 3d Engine to render 3d shapes in an HTML canvas using javasc
 
 The reason I'm developing this is because of its potential applications for game design, 3D web design and because it's cool to apply math theory i've learned in school
 
-Teseract Branch is a 4D to 2D projection of a rotating hypercube 
+Teseract Branch is a 4D to 2D projection of a rotating hypercube (Still Nedds To be cleaned up)
