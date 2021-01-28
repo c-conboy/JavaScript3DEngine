@@ -270,7 +270,7 @@ function rotate(M, center, theta, pi){
     
     M.x = ct * x - st * cp * y + st * sp * z + center.x;
     M.y = st * x + ct * cp * y - ct * sp * z + center.y;
-    M.z = sp * y + cp * z + center.z; 
+    M.z = sp * y + cp * z + center.z;  
 }
 
 //Autorates if theres no input
