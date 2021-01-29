@@ -321,6 +321,9 @@ function stopMove(){//evt mosue up
 //canvas setup
 var canvas = document.getElementById('myChart'); 
 var ctx = canvas.getContext('2d');
+
+ctx.canvas.width  = window.innerWidth -200;
+ctx.canvas.height = window.innerHeight - 200
 ctx.strokeStyle = 'rgba(0, 0, 0, 1)';
 ctx.fillStyle = 'rgba(0, 150, 255, 0.3)';
 ctx.lineWidth = 3;
