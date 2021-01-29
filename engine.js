@@ -177,12 +177,32 @@ function stopMove(){//evt mosue up
     setTimeout(autoRotate(objects), 1000);
 }
 
+function createSquare(){
+    clearObjects();
+    objects[0] = new Cube(cube_center, dy);
+    stopMove();
+}
+
+function createPyramid(){
+    clearObjects();
+    objects[0] = new Pyramid(cube_center, dy/2, dy);
+    stopMove();
+}
+
+function clearObjects(){
+    objects = [];
+}
+
+
 
 //canvas setup
 var canvas = document.getElementById('myChart'); 
 var ctx = canvas.getContext('2d');
-ctx.strokeStyle = 'rgba(0, 0, 0, 0.3)';
-ctx.fillStyle = 'rgba(0, 150, 255, 0.3)';
+
+ctx.canvas.width  = window.innerWidth -200;
+ctx.canvas.height = window.innerHeight - 200;
+ctx.strokeStyle = 'rgba(0, 0, 0, 0.6)';
+ctx.fillStyle = 'rgba(72, 209, 204, 0.3)';
 
 //reference center
 var dx = canvas.width / 2;
