@@ -71,6 +71,48 @@ var Pyramid = function(center, r, h){
         [this.vertices[1], this.vertices[2], this.vertices[3], this.vertices[4]]
     ]
 
+
+
+
+    
+}
+
+
+var Icosahedron = function(center, r){
+
+    var c1 = Math.cos(2*(Math.PI)/5);
+    var c2 = Math.cos((Math.PI)/5);
+    var s1 = Math.sin(2*(Math.PI)/5);
+    var s2 = Math.sin(4*(Math.PI)/5);
+
+    var dL = Math.sqrt(((-s2)^2)+((1-c2)^2));
+
+    this.vertices = [
+
+        //Pentagon Plane #1
+        new Vertex(center.x, center.y + r, center.z),//0
+        new Vertex(center.x + s1*r, center.y + c1*r, center.z+r/2),//1
+        new Vertex(center.x + s2*r, center.y - c2*r, center.z+r/2),//2
+        new Vertex(center.x - s2*r, center.y - c2*r, center.z+r/2),//3
+        new Vertex(center.x - s1*r, center.y + c1*r, center.z+r/2),//4
+
+        //Pentagon Plane #2
+        new Vertex(center.x, center.y - r, center.z),
+        new Vertex(center.x + s1*r, center.y - c1*r, center.z+r/2),//1
+        new Vertex(center.x + s2*r, center.y + c2*r, center.z+r/2),//2
+        new Vertex(center.x - s2*r, center.y + c2*r, center.z+r/2),//3
+        new Vertex(center.x - s1*r, center.y - c1*r, center.z+r/2),//4
+
+        //Pentagon Plane #3
+        new Vertex(center.x, center.y + r, center.z),//0
+        new Vertex(center.x + s1*r, center.y + c1*r, center.z-r/2),//1
+        new Vertex(center.x + s2*r, center.y - c2*r, center.z-r/2),//2
+        new Vertex(center.x - s2*r, center.y - c2*r, center.z-r/2),//3
+        new Vertex(center.x - s1*r, center.y + c1*r, center.z-r/2),//4
+
+    ]
+
+
 }
 
 
@@ -216,6 +258,7 @@ var cube1 = new Cube(cube_center, dy);
 var cube2 = new Cube(cube_center, dy/2);
 var pyramid1 = new Pyramid(cube_center, dy/2, dy);
 var pyramid2 = new Pyramid(cube_center, dy/4, dy/2);
+var icosahedron1 = new Icosahedron(cube_center, dy);
 
 var objects = [pyramid1, pyramid2, cube1, cube2];
 
