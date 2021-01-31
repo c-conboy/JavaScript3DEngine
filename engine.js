@@ -85,31 +85,62 @@ var Icosahedron = function(center, r){
     var s1 = Math.sin(2*(Math.PI)/5);
     var s2 = Math.sin(4*(Math.PI)/5);
 
-    var dL = Math.sqrt(((-s2)^2)+((1-c2)^2));
+    //((-(s2*r))^2)+((r-c2*r)^2)
+
+    var dL = 2*r/(Math.sqrt(6)+Math.sqrt(2));
+    console.log(dL);
 
     this.vertices = [
 
         //Pentagon Plane #1
-        new Vertex(center.x, center.y + r, center.z),//0
-        new Vertex(center.x + s1*r, center.y + c1*r, center.z+r/2),//1
-        new Vertex(center.x + s2*r, center.y - c2*r, center.z+r/2),//2
-        new Vertex(center.x - s2*r, center.y - c2*r, center.z+r/2),//3
-        new Vertex(center.x - s1*r, center.y + c1*r, center.z+r/2),//4
-
-        //Pentagon Plane #2
-        new Vertex(center.x, center.y - r, center.z),
-        new Vertex(center.x + s1*r, center.y - c1*r, center.z+r/2),//1
-        new Vertex(center.x + s2*r, center.y + c2*r, center.z+r/2),//2
-        new Vertex(center.x - s2*r, center.y + c2*r, center.z+r/2),//3
-        new Vertex(center.x - s1*r, center.y - c1*r, center.z+r/2),//4
+        new Vertex(center.x, center.y - r, center.z),//0N
+        new Vertex(center.x + s1*r, center.y - c1*r, center.z+r/2),//1O
+        new Vertex(center.x + s2*r, center.y + c2*r, center.z+r/2),//2P
+        new Vertex(center.x - s2*r, center.y + c2*r, center.z+r/2),//3L
+        new Vertex(center.x - s1*r, center.y - c1*r, center.z+r/2),//4M
 
         //Pentagon Plane #3
-        new Vertex(center.x, center.y + r, center.z),//0
-        new Vertex(center.x + s1*r, center.y + c1*r, center.z-r/2),//1
-        new Vertex(center.x + s2*r, center.y - c2*r, center.z-r/2),//2
-        new Vertex(center.x - s2*r, center.y - c2*r, center.z-r/2),//3
-        new Vertex(center.x - s1*r, center.y + c1*r, center.z-r/2),//4
+        new Vertex(center.x, center.y + r, center.z),//5Q
+        new Vertex(center.x + s1*r, center.y + c1*r, center.z-r/2),//6U
+        new Vertex(center.x + s2*r, center.y - c2*r, center.z-r/2),//7T
+        new Vertex(center.x - s2*r, center.y - c2*r, center.z-r/2),//8S
+        new Vertex(center.x - s1*r, center.y + c1*r, center.z-r/2),//9R
 
+        //Top tip
+        new Vertex(center.x, center.y, center.z + r/2 + dL),//10X
+
+        //Bottom tip
+        new Vertex(center.x, center.y, center.z - r/2 - dL),//11Z
+
+    ]
+
+    this.faces = [
+        //Top cone
+        [this.vertices[10], this.vertices[0], this.vertices[4]], //XMN
+        [this.vertices[10], this.vertices[0], this.vertices[1]], //XNO
+        [this.vertices[10], this.vertices[1], this.vertices[2]], //XPO
+        [this.vertices[10], this.vertices[2], this.vertices[3]], //XPL
+        [this.vertices[10], this.vertices[3], this.vertices[4]], //XLM
+        
+        //Sides
+        [this.vertices[4], this.vertices[0], this.vertices[8]], //MNS -
+        [this.vertices[8], this.vertices[7], this.vertices[0]], //STN +
+        [this.vertices[0], this.vertices[1], this.vertices[7]], //NOT -
+        [this.vertices[7], this.vertices[6], this.vertices[1]], //TUO +
+        [this.vertices[2], this.vertices[1], this.vertices[6]], //POU -
+        [this.vertices[5], this.vertices[6], this.vertices[2]], //QUP +
+        [this.vertices[3], this.vertices[2], this.vertices[5]], //LPQ -
+        [this.vertices[5], this.vertices[9], this.vertices[3]], //QRL +
+        [this.vertices[3], this.vertices[4], this.vertices[9]], //LMR -
+        [this.vertices[9], this.vertices[8], this.vertices[4]], //RSM +
+
+        //Bottom Cone
+        [this.vertices[11], this.vertices[8], this.vertices[7]], //ZST
+        [this.vertices[11], this.vertices[7], this.vertices[6]], //ZTU
+        [this.vertices[11], this.vertices[5], this.vertices[6]], //ZQU
+        [this.vertices[11], this.vertices[5], this.vertices[9]], //ZQR
+        [this.vertices[11], this.vertices[9], this.vertices[8]], //ZRS
+        
     ]
 
 
@@ -260,7 +291,7 @@ var pyramid1 = new Pyramid(cube_center, dy/2, dy);
 var pyramid2 = new Pyramid(cube_center, dy/4, dy/2);
 var icosahedron1 = new Icosahedron(cube_center, dy);
 
-var objects = [pyramid1, pyramid2, cube1, cube2];
+var objects = [icosahedron1];
 
 
 //event setup
