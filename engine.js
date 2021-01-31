@@ -85,22 +85,22 @@ var Icosahedron = function(center, r){
     var s1 = Math.sin(2*(Math.PI)/5);
     var s2 = Math.sin(4*(Math.PI)/5);
 
-    //((-(s2*r))^2)+((r-c2*r)^2)
+
 
     var dL = 2*r/(Math.sqrt(6)+Math.sqrt(2));
-    console.log(dL);
+
 
     this.vertices = [
 
         //Pentagon Plane #1
-        new Vertex(center.x, center.y - r, center.z),//0N
+        new Vertex(center.x, center.y - r, center.z+r/2),//0N
         new Vertex(center.x + s1*r, center.y - c1*r, center.z+r/2),//1O
         new Vertex(center.x + s2*r, center.y + c2*r, center.z+r/2),//2P
         new Vertex(center.x - s2*r, center.y + c2*r, center.z+r/2),//3L
         new Vertex(center.x - s1*r, center.y - c1*r, center.z+r/2),//4M
 
         //Pentagon Plane #3
-        new Vertex(center.x, center.y + r, center.z),//5Q
+        new Vertex(center.x, center.y + r, center.z-r/2),//5Q
         new Vertex(center.x + s1*r, center.y + c1*r, center.z-r/2),//6U
         new Vertex(center.x + s2*r, center.y - c2*r, center.z-r/2),//7T
         new Vertex(center.x - s2*r, center.y - c2*r, center.z-r/2),//8S
@@ -139,7 +139,7 @@ var Icosahedron = function(center, r){
         [this.vertices[11], this.vertices[7], this.vertices[6]], //ZTU
         [this.vertices[11], this.vertices[5], this.vertices[6]], //ZQU
         [this.vertices[11], this.vertices[5], this.vertices[9]], //ZQR
-        [this.vertices[11], this.vertices[9], this.vertices[8]], //ZRS
+        [this.vertices[11], this.vertices[9], this.vertices[8]] //ZRS
         
     ]
 
@@ -157,10 +157,10 @@ function render(objects, ctx, dx, dy){
     ctx.clearRect(0, 0, 2*dx, 2*dy);
 
     for(var i =0, numbObjects = objects.length; i < numbObjects; ++i){
-        for(var j=0, numbFaces = objects[j].faces.length; j < numbFaces; ++j){
+        for(var j=0, numbFaces = objects[i].faces.length; j < numbFaces; ++j){
            
             var face = objects[i].faces[j];//gets current face 
-
+           
             var P = project(face[0]); //P is projection of first vertex
             
             ctx.beginPath();
@@ -250,20 +250,29 @@ function stopMove(){//evt mosue up
     setTimeout(autoRotate(objects), 1000);
 }
 
-function createSquare(){
-    clearObjects();
-    objects[0] = new Cube(cube_center, dy);
-    stopMove();
-}
-
-function createPyramid(){
-    clearObjects();
-    objects[0] = new Pyramid(cube_center, dy/2, dy);
-    stopMove();
-}
 
 function clearObjects(){
     objects = [];
+}
+
+function newShape(shape){
+    clearObjects();
+    switch(shape){
+        case 'cube' :
+            objects[0] = new Cube(cube_center, dy);
+            break;
+        case 'pyramid' : 
+            objects[0] = new Pyramid(cube_center, dy/2, dy);
+            break;
+        case 'icosahedron' :
+            objects[0] = new Icosahedron(cube_center, dy/2);
+            break;
+        default:
+            console.log("Invalid Shape");
+    }
+
+    stopMove();
+
 }
 
 
@@ -289,9 +298,9 @@ var cube1 = new Cube(cube_center, dy);
 var cube2 = new Cube(cube_center, dy/2);
 var pyramid1 = new Pyramid(cube_center, dy/2, dy);
 var pyramid2 = new Pyramid(cube_center, dy/4, dy/2);
-var icosahedron1 = new Icosahedron(cube_center, dy);
+var icosahedron1 = new Icosahedron(cube_center, dy/2);
 
-var objects = [icosahedron1];
+var objects = [cube1, pyramid1, icosahedron1];
 
 
 //event setup
