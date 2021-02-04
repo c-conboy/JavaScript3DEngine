@@ -1,7 +1,10 @@
 # JavaScript3DEngine
 
-Developing a simple 3d Engine to render 3d shapes in an HTML canvas using javascript. Goal is to be able to render 2D projection of various 3D shapes and be able to interact with them. 
+This project is intended to explore the application of Academic Math Theory to Game & 3D Web Design.
 
-The reason I'm developing this is because of its potential applications for game design, 3D web design and because it's cool to apply math theory I've learned in school
+Specifically, by creating a simple 3D Engine that will
 
-Tesseract Branch is a 4D to 2D projection of a rotating hypercube (Still needs To be cleaned up)
+render 3D shapes in an HTML canvas using javascript
+render 2D projection of various 3D shapes
+provide mechanisms for user interaction with the shapes
+Tesseract Branch is a 4D to 2D projection of a rotating hypercube (Work in Progress)
